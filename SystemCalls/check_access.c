@@ -8,6 +8,7 @@ int main (int argc, char* argv[])
 	int rval;
 
 	// TODO:  Check file existence
+	rval = access(path,F_OK);
 	if (rval == 0)
 		printf ("%s exists\n", path);
 	else 
@@ -18,19 +19,25 @@ int main (int argc, char* argv[])
 			printf ("%s is not accessible\n", path);
 		return 0;
 	}
+	
 	// TODO:  Check read access
+	rval = access(path,R_OK);
 	if (rval == 0)
 		printf ("%s is readable\n", path);
 	else
 		printf ("%s is not readable (access denied)\n", path);
+	
 	// TODO:  Check write access
+	rval = access(path,W_OK);
 	if (rval == 0)
 		printf ("%s is writable\n", path);
 	else if (errno == EACCES)
 		printf ("%s is not writable (access denied)\n", path);
 	else if (errno == EROFS)
 		printf ("%s is not writable (read-only filesystem)\n", path);
+	
 	// TODO:  Check executable access
+	rval = access(path,X_OK);
 	if (rval == 0)
 		printf ("%s is Executable\n", path);
 	else if (errno == EACCES)

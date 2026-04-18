@@ -15,9 +15,10 @@ int main()
     int num, fd;
 
     // TODO 1: Create FIFO using the system call
-    
+    mkfifo(FIFO_NAME,0666); 
     printf("Waiting for writers ...\n");
     // TODO 2: Open the FIFO for read only 
+    fd = open(FIFO_NAME,O_RDONLY);
     printf("Got a writer:\n");
 
     do

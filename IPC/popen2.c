@@ -13,12 +13,14 @@ int main()
     char readbuf[80];
 
     // TODO 1: Create one way pipe line with call to popen() and ls as arg
-
+    pipein_fp = popen("ls","r");
     // TODO 2: Create one way pipe line with call to popen() and "sort -r" as arg
-
+    pipeout_fp = popen("sort -r","w");	
     /* Processing loop */
     // TODO 3: Read from the pipe into readbuff and write to the pipeout_fp
-   
+    while(fgets(readbuf,50,pipein_fp) != NULL){
+    	fprintf(pipeout_fp,readbuf);
+    } 
     /* Close the pipes */
     pclose(pipein_fp);
     pclose(pipeout_fp);

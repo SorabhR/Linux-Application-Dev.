@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 	//TODO: Invoke fcntl to lock the file
 	//struct flock lock;
 	memset(&lock,0,sizeof(lock));	
-	lock.l_type = F_WRLCK;
+	lock.l_type = F_RDLCK;
 	
 	//fcntl(fd,F_SETLK,&lock);	
 	if (fcntl(fd, F_SETLKW, &lock) == -1) {

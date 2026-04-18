@@ -6,5 +6,12 @@
 int main()
 {
 	int cpid, status;
+	cpid = fork();
+	if(cpid == 0){
+		exit(0);
+	}
+	else{
+		sleep(10);
+	}
 
 }

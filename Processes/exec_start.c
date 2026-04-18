@@ -13,6 +13,7 @@ int main()
 
 	printf("exec starts\n");
 	//TODO 1: Execute exec_overlay with execl function 
+	execlp("./exec_overlay","exec_overlay",(char*)0);
 	printf("This won't print\n");
 	return 0;
 }

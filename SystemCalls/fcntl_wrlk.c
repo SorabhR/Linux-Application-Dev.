@@ -30,9 +30,25 @@ int main(int argc, char* argv[])
 	//Entire file
 	//TODO: Invoke fcntl to lock the file
 	//struct flock lock;
-	memset(&lock,0,sizeof(lock));	
+	memset(&lock,0,sizeof(lock));
+
+	// 2. Ask the kernel
+    	if (fcntl(fd, F_GETLK, &lock) == -1) {
+        	perror("fcntl F_GETLK failed");
+        	return;
+    	}
+
+    	// 3. Inspect the results
+    	if (lock.l_type != F_UNLCK) {
+        	printf("The file is currently LOCKED. You can wait.\n");
+		sleep(1);
+    		fcntl(fd, F_GETLK, &lock); 
+    	}
+
 	lock.l_type = F_WRLCK;
-	
+	lock.l_whence = SEEK_SET;
+	lock.l_start = 0;
+	lock.l_len = 10; //locks 10 bytes only for write	
 	//fcntl(fd,F_SETLK,&lock);	
 	if (fcntl(fd, F_SETLKW, &lock) == -1) {
             perror("waiting for lock error");

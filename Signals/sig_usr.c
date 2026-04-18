@@ -9,7 +9,9 @@ sig_atomic_t sigusr1_count = 0;
 void handler()
 {
 	++sigusr1_count;
+	sleep(3);
 	printf("Trigger from Child.\n");
+	sleep(2);
 }
 
 int main()
@@ -19,6 +21,10 @@ int main()
 
 	memset(&act, 0, sizeof(act));
 	act.sa_handler = &handler;
+	
+	sigemptyset(&act.sa_mask);
+	
+	sigaddset(&act.sa_mask,SIGINT);
 	sigaction(SIGUSR1, &act, NULL);
 
 	if (fork()) // Parent

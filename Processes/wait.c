@@ -17,8 +17,20 @@ int main()
     }
     else
     {
-        // TODO 1: Wait for the child process termination
-        // TODO 2: Print the exit code, if process exited normally
+	if(fork() == 0){
+		sleep(20);
+	}
+	else{	
+        	// TODO 1: Wait for the child process termination
+        	pid_t child_pid = wait(&status);
+		printf("Child done is %d\r\n",child_pid);
+		// TODO 2: Print the exit code, if process exited normally
+		if(status == 0){
+			printf("Exited successfully %d\n",status);
+		}
+		else
+			printf("Abnormal exit\n");
+    	}
     }
     return 0;
 }

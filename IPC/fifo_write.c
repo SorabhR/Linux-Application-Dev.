@@ -15,9 +15,10 @@ int main()
     int fd, ret, num;
 
     // TODO 1: Create FIFO using the system call
-
+	mkfifo(FIFO_NAME,0666);
     printf("Waiting for readers ...\n");
     // TODO 2: Open the FIFO for write only 
+    fd = open(FIFO_NAME,O_WRONLY);
     printf("Got a reader - Type some stuff\n");
 
     while ((ret = scanf("%[^\n]%*c", s)), !feof(stdin)) 
