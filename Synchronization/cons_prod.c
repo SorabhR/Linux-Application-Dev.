@@ -11,6 +11,7 @@ struct job
 };
 
 static struct job* job_queue;
+static pthread_mutex_t mutex;
 
 void random_sleep(int factor)
 {
@@ -35,6 +36,7 @@ void *consumer(void *arg)
 
     while (1)
     {
+		pthread_mutex_lock(&mutex);
         if (job_queue == NULL)
             next_job = NULL;
         else
@@ -42,9 +44,11 @@ void *consumer(void *arg)
             next_job = job_queue;
             job_queue = job_queue->next;
         }
+		pthread_mutex_unlock(&mutex);
 
         if (next_job == NULL)
-            break;
+            //break;
+	    continue;
         process_job(next_job, (long)(arg));
         free(next_job);
     }
@@ -60,8 +64,10 @@ void enqueue_job(void)
     new_job = (struct job *)malloc(sizeof(struct job));
     new_job->data = i++;
 
+	pthread_mutex_lock(&mutex);
     new_job->next = job_queue;
     job_queue = new_job;
+	pthread_mutex_unlock(&mutex);
 
     printf("\nJob no %d is added.\n", i - 1);
 }
@@ -81,6 +87,7 @@ int main()
 {
     int i;
     pthread_t th_id1, th_id2, th_prod;
+	pthread_mutex_init(&mutex, NULL);
 
     for(i = 0; i < 6; i++) // Put some jobs to start with
     {

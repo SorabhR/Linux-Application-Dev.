@@ -4,8 +4,10 @@
 /* Prints x’s to stderr. The parameter is unused. Does not return. */
 void *print_xs(void* unused)
 {
-    while (1)
+    while (1){
         fputc('x', stderr);
+    	sleep(1);
+    }
     return NULL;
 }
 
@@ -20,6 +22,7 @@ int main()
         printf("Thread creation failed\n");
         return 1;
     }
+    pthread_join(thread_id, NULL);
     printf("Thread created\n");
     return 0;
 }

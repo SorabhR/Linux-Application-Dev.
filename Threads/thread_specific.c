@@ -10,12 +10,14 @@ static pthread_key_t thread_log_key;
 void read_from_thread(int thread_num)
 {
 	//TODO 4: Get the pointer to the allocated
+	char* data = pthread_getspecific(thread_log_key);
 	printf("The data from thread %d is %s\n", thread_num, data);
 }
 /* Close the log file pointer THREAD_LOG.  */
 void free_data(void *arg)
 {
 	//TODO 5: Free up the allocated space
+	char *data = (char*) arg;
 	printf("%s freeing\n", data);
 	free(data);
 }
@@ -26,7 +28,10 @@ void *thread_function(void *arg)
 	int i;
 
 	// TODO 2: Allocate the memory for 20 bytes and assign it to data
+	data = (char*)malloc(20);
+	sprintf(data, "Log for %d", thread_num);
 	// TODO 3: Store pointer to the allocated space in thread specific data area
+	pthread_setspecific(thread_log_key, data);
 	/* Do work here ... */
 	for (i = 0; i < 2 * thread_num; i++)
 	{
@@ -44,7 +49,7 @@ int main()
 
 	// TODO 1: Create a key for thread specific data
 	// Use free_data as cleanup handler
-
+	pthread_key_create(&thread_log_key,free_data);
 	/* Create threads to do the work */
 	for (i = 0; i < 5; ++i)
 		pthread_create(&(threads[i]), NULL, &thread_function, (void *)(long)(i + 1));
@@ -54,6 +59,6 @@ int main()
 
 	/* Delete the key */
 	// TODO 6: Free up the thread specific key with pthread_key_delete
-
+	pthread_key_delete(thread_log_key);
 	return 0;
 }

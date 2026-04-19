@@ -9,8 +9,9 @@ struct fact_params
 void *fact(void *parameters)
 {
 	//TODO 2: Initialize p with arguments
+	struct fact_params* p = (struct fact_params*) parameters;
 	int i, factorial = 1;
-	void *pp;
+	void *pp = malloc(sizeof(int));
 
 	if (p->count != 0)
 	{
@@ -18,6 +19,7 @@ void *fact(void *parameters)
 			factorial = factorial * i;
 	}
 	//TODO 3: Assign the result to pp
+	*(int*)pp = factorial;
 	return pp;
 }
 
@@ -33,9 +35,10 @@ int main()
 	thread_args.count = n;
 
 	//TODO 1: Create the thread with threads_args as argument
-	
+	pthread_create(&thread_id,NULL,fact,(void*) &thread_args);
 	//TODO 4: Get the return value from the thread
-	printf("Factorial = %d\n", p);
+	pthread_join(thread_id,&p);
+	printf("Factorial = %d\n",*(int*) p);
 
 	return 0;
 }

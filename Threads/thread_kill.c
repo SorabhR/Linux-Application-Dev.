@@ -14,7 +14,16 @@ void *threadfunc(void *parm)
 
 	printf("Thread %d (0x%x) entered\n", no, self);
 	errno = 0;
-	rc = sleep(30);
+	if(no==1){
+		sigset_t set;
+    		sigemptyset(&set);
+    		sigaddset(&set, SIGALRM);
+
+    		// This thread will now ignore SIGALRM
+    		pthread_sigmask(SIG_BLOCK, &set, NULL);
+	}
+	
+	rc = sleep(10);
 	if (rc != 0 && errno == EINTR)
 	{
 		printf("Thread %d (0x%x) got a signal delivered to it\n", no, self);

@@ -22,8 +22,11 @@ int main()
 	//TODO 1: Initialize the attribute object
 	pthread_attr_init(&attr);
 	//TODO 2: Modify attribute to set the state to PTHREAD_CREATE_DETACHED
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
 	//TODO 3: Create the thread with above attribute
+	pthread_create(&thread,&attr,thread_function,NULL);
 	//TODO 4: De-Initialize the attribute object
+	pthread_attr_destroy(&attr);
 	/* Do work here... */
 	while (1)
 	{

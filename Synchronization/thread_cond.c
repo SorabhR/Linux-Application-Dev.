@@ -8,6 +8,7 @@
 
 static int count = 0;
 static pthread_mutex_t count_mutex;
+static pthread_cond_t count_cond;
 
 void *inc_count(void *t) 
 {
@@ -18,6 +19,8 @@ void *inc_count(void *t)
     {
         pthread_mutex_lock(&count_mutex);
         count++;
+	if(count == COUNT_LIMIT)
+		pthread_cond_signal(&count_cond);
         pthread_mutex_unlock(&count_mutex);
 
         /* Do some work so threads can alternate on mutex lock */
@@ -34,9 +37,10 @@ void *watch_count(void *t)
 
     while (1) {
         pthread_mutex_lock(&count_mutex);
-        if (count < COUNT_LIMIT)
+        while (count < COUNT_LIMIT)
         {
-            pthread_mutex_unlock(&count_mutex);
+            //pthread_mutex_unlock(&count_mutex);
+	    pthread_cond_wait(&count_cond, &count_mutex);
             continue;
         }
         printf("watch_count(): thread %ld. Count now = %d\n", my_id, count);
@@ -54,6 +58,7 @@ int main(int argc, char *argv[])
 
     /* Initialize mutex and condition variable objects */
     pthread_mutex_init(&count_mutex, NULL);
+    pthread_cond_init(&count_cond, NULL);
 
     pthread_create(&threads[0], NULL, &watch_count, (void *)t1);
     pthread_create(&threads[1], NULL, &inc_count, (void *)t2);
@@ -69,5 +74,6 @@ int main(int argc, char *argv[])
 
     /* Clean up and exit */
     pthread_mutex_destroy(&count_mutex);
+    pthread_cond_destroy(&count_cond);
     return 0;
 }

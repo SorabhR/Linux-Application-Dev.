@@ -24,14 +24,16 @@ void *do_some_work(void *p)
 	 * TODO 1: Register a cleanup handler for this buffer, to deallocate it in case
 	 * the thread exits or is cancelled.
 	 */
+	pthread_cleanup_push(deallocate_buffer,temp_buffer);
 	/* Do some work here that might call pthread_exit or might be cancelled */
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < 5; i++)
 	{
 		fputc('c', stderr);	
 		fflush(stderr);
 		sleep(1);
 	}
 	 // TODO 2: Unregister the cleanup handler. 
+	pthread_cleanup_pop(0);
 	return NULL;
 }
 
@@ -42,7 +44,7 @@ int main()
 	
 	pthread_create(&thread_id, NULL, &do_some_work, NULL);
 	sleep(3);
-	pthread_cancel(thread_id);
+	//pthread_cancel(thread_id);
 	pthread_join(thread_id, &status);
 	if (status == PTHREAD_CANCELED)
 	{
