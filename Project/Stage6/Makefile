@@ -1,6 +1,6 @@
 CC := gcc
 CFLAGS = -Wall -Wextra -O2 -g
-LDFLAGS := -lpthread -L. -lsem -lsig
+LDFLAGS := -lpthread -L. -lsem -lsig -lsock
 
 LSRC := $(wildcard lib*.c)
 LIB := $(LSRC:.c=.so)

@@ -23,6 +23,7 @@ int open_socket(const char *ip, int port)
     struct sockaddr_in my_addr;
 
     // TODO 1: Get the socket
+    fd = socket(AF_INET,SOCK_STREAM,0);
     if (fd == -1)
     {
         perror("socket");
@@ -44,7 +45,7 @@ int open_socket(const char *ip, int port)
     bzero(&(my_addr.sin_zero), 8);
 
     // TODO 3: Name the socket with bind system call
-    if (-1)
+    if (bind(fd,(struct sockaddr *)&my_addr,sizeof(my_addr)) == -1)
     {
         perror("bind");
         close(fd);
@@ -52,7 +53,7 @@ int open_socket(const char *ip, int port)
     }
 
     // TODO 4: Listen to the socket
-    if (-1)
+    if (listen(fd,1) == -1)
     {
         perror("listen");
         close(fd);
@@ -75,6 +76,7 @@ int get_socket(int sfd, char *client_ip)
 
     sin_size = sizeof(struct sockaddr_in);
     // TODO 5: Accept the connections
+    fd = accept(sfd,(struct sockaddr*)&their_addr,(socklen_t*)&sin_size);
     if(fd == -1)
     {
         perror("accept");
@@ -98,6 +100,7 @@ int write_eth(int fd, const void *buf, unsigned int size)
     int write_cnt;
 
     // TODO 6 Send over the socket
+    write_cnt = send(fd,buf,size,0);
     if (write_cnt == -1)
     {
         perror("send");
@@ -110,12 +113,11 @@ int read_eth(int fd, void *buf, unsigned int size)
     int read_cnt;
 
     // TODO 7 Receive from the socket
+    read_cnt = read(fd,buf,size);
     if (read_cnt <= 0)
     {
         if (!read_cnt)
-        {
             errno = 0;
-        }
         perror("recv");
         return -1;
     }

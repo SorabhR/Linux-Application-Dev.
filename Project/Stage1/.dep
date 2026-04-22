@@ -1,0 +1,2 @@
+libsig.o: libsig.c sig.h
+server.o: server.c sig.h

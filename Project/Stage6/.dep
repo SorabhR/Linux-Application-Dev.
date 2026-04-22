@@ -1,0 +1,6 @@
+client.o: client.c sig.h em_registers.h sock.h
+libsem.o: libsem.c
+libsig.o: libsig.c sig.h
+libsock.o: libsock.c
+register_update.o: register_update.c sem.h em_registers.h
+server.o: server.c sig.h em_registers.h sem.h sock.h

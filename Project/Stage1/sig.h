@@ -3,6 +3,7 @@
 
 #include <signal.h>
 #include <string.h>
+#include <stdio.h>
 
 int signal_register(int signum, void (*fun)(int), struct sigaction*oldact, sigset_t *sa_mask); 
 int signal_deregister(int signum); 
