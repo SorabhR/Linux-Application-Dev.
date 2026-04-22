@@ -4,7 +4,7 @@
 #include <mqueue.h>
 #include <sys/stat.h>
 
-#define QUEUE_NAME  "/notify_queue"
+#define QUEUE_NAME  "/my_queue"
 #define MAX_SIZE    1024
 #define MSG_STOP    "exit"
 
@@ -16,12 +16,12 @@ int main() {
 
     // 1. Define queue attributes
     attr.mq_flags = 0;
-    attr.mq_maxmsg = 10;           // Max messages in queue
+    attr.mq_maxmsg = 2;           // Max messages in queue
     attr.mq_msgsize = MAX_SIZE;    // Max size of each message
     attr.mq_curmsgs = 0;
 
     // 2. Open (and create) the queue
-    mq = mq_open(QUEUE_NAME, O_CREAT | O_WRONLY, 0644, &attr);
+    mq = mq_open(QUEUE_NAME, O_CREAT | O_WRONLY | O_NONBLOCK, 0644, &attr);
     if (mq == (mqd_t)-1) {
         perror("mq_open");
         exit(1);
@@ -32,6 +32,14 @@ int main() {
     buffer[strcspn(buffer, "\n")] = 0; // Remove newline
 
     // 3. Send the message
+    if (mq_send(mq, buffer, strlen(buffer) + 1, priority) == -1) {
+        perror("mq_send");
+    }
+    priority = 12;
+    if (mq_send(mq, buffer, strlen(buffer) + 1, priority) == -1) {
+        perror("mq_send");
+    }
+    priority = 5;
     if (mq_send(mq, buffer, strlen(buffer) + 1, priority) == -1) {
         perror("mq_send");
     }
